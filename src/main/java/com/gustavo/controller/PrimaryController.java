@@ -1,6 +1,8 @@
-package com.gustavo;
+package com.gustavo.controller;
 
 import java.io.IOException;
+
+import com.gustavo.App;
 import javafx.fxml.FXML;
 
 public class PrimaryController {
