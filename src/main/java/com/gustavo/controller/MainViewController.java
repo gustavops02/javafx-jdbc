@@ -2,6 +2,7 @@ package com.gustavo.controller;
 
 
 import com.gustavo.App;
+import com.gustavo.model.services.DepartmentService;
 import com.gustavo.utils.Alerts;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,6 +17,7 @@ import javafx.scene.layout.VBox;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 
 public class MainViewController implements Initializable {
 
@@ -35,12 +37,15 @@ public class MainViewController implements Initializable {
 
     @FXML
     public void onMenuItemDepartmentAction() {
-        loadView("DepartmentList");
+        loadView("DepartmentList", (DepartmentListController controller) -> {
+            controller.setDepartmentService(new DepartmentService());
+            controller.updateTableView();
+        });
     }
 
     @FXML
     public void onMenuItemAboutAction() {
-        loadView("About");
+        loadView("About", x -> {});
     }
 
     @Override
@@ -48,7 +53,7 @@ public class MainViewController implements Initializable {
 
     }
 
-    private synchronized void loadView(String fileName) {
+    private synchronized <T> void loadView(String fileName, Consumer<T> initializingAction) {
         try {
             FXMLLoader loader = new FXMLLoader(App.class.getResource(fileName + ".fxml"));
             VBox newVBox = loader.load();
@@ -61,6 +66,9 @@ public class MainViewController implements Initializable {
             mainVBox.getChildren().clear();
             mainVBox.getChildren().add(mainMenu);
             mainVBox.getChildren().addAll(newVBox.getChildren());
+
+            T controller = loader.getController();
+            initializingAction.accept(controller);
 
         } catch (IOException e) {
             Alerts.showAlert("Erro", null, "Não foi possível carregar a página", Alert.AlertType.ERROR);
