@@ -1,6 +1,7 @@
 package com.gustavo.controller;
 
 import com.gustavo.App;
+import com.gustavo.infra.listeners.DataChangeListener;
 import com.gustavo.model.entities.Department;
 import com.gustavo.model.services.DepartmentService;
 import com.gustavo.utils.Alerts;
@@ -26,7 +27,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class DepartmentListController implements Initializable {
+public class DepartmentListController implements Initializable, DataChangeListener {
 
     private DepartmentService service;
 
@@ -86,6 +87,7 @@ public class DepartmentListController implements Initializable {
             DepartmentFormController controller = loader.getController();
             controller.setDepartment(obj);
             controller.setDepartmentService(new DepartmentService());
+            controller.subscribeDataChangeListener(this);
             controller.updateFormData();
 
             Stage dialog = new Stage();
@@ -99,5 +101,10 @@ public class DepartmentListController implements Initializable {
         } catch (IOException e) {
             Alerts.showAlert("Erro", null, "Erro ao carregar o formulário", Alert.AlertType.ERROR);
         }
+    }
+
+    @Override
+    public void onDataChanged() {
+        updateTableView();
     }
 }

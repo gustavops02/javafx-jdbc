@@ -1,6 +1,7 @@
 package com.gustavo.controller;
 
 import com.gustavo.db.DbException;
+import com.gustavo.infra.listeners.DataChangeListener;
 import com.gustavo.model.entities.Department;
 import com.gustavo.model.services.DepartmentService;
 import com.gustavo.utils.Alerts;
@@ -15,12 +16,17 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class DepartmentFormController implements Initializable {
 
     private DepartmentService service;
     private Department entity;
+
+    private List<DataChangeListener> dataChangeListeners = new ArrayList<>();
+
 
     @FXML
     private TextField txtId;
@@ -40,6 +46,10 @@ public class DepartmentFormController implements Initializable {
     public void setDepartment(Department entity) { this.entity = entity; }
     public void setDepartmentService (DepartmentService service) {this.service = service;}
 
+    public void subscribeDataChangeListener(DataChangeListener listener) {
+        dataChangeListeners.add(listener);
+    }
+
     @FXML
     public void onBtnSaveAction(ActionEvent event) {
         if(entity == null) {
@@ -51,9 +61,16 @@ public class DepartmentFormController implements Initializable {
         try {
             entity = getFormData();
             service.saveOrUpdate(entity);
+            notifyDataChangeListeners();
             Utils.currentStage(event).close();
         } catch(DbException e) {
             Alerts.showAlert("Erro ao cadastrar", null, e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    private void notifyDataChangeListeners() {
+        for(DataChangeListener listener : dataChangeListeners) {
+            listener.onDataChanged();
         }
     }
 
