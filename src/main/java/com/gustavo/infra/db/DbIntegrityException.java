@@ -1,4 +1,4 @@
-package com.gustavo.db;
+package com.gustavo.infra.db;
 
 public class DbIntegrityException extends RuntimeException {
     private static final long serialVersionUID = 1L;

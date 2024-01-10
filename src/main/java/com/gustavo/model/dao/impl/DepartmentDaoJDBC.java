@@ -1,8 +1,8 @@
 package com.gustavo.model.dao.impl;
 
-import com.gustavo.db.DB;
-import com.gustavo.db.DbException;
-import com.gustavo.db.DbIntegrityException;
+import com.gustavo.infra.db.DB;
+import com.gustavo.infra.db.DbException;
+import com.gustavo.infra.db.DbIntegrityException;
 import com.gustavo.model.dao.DepartmentDao;
 import com.gustavo.model.entities.Department;
 

@@ -1,4 +1,4 @@
-package com.gustavo.db;
+package com.gustavo.infra.db;
 
 import java.io.FileInputStream;
 import java.io.IOException;

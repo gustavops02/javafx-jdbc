@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.gustavo.db.DB;
-import com.gustavo.db.DbException;
+import com.gustavo.infra.db.DB;
+import com.gustavo.infra.db.DbException;
 import com.gustavo.model.dao.SellerDao;
 import com.gustavo.model.entities.Department;
 import com.gustavo.model.entities.Seller;
