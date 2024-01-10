@@ -1,6 +1,7 @@
 package com.gustavo.controller;
 
 import com.gustavo.App;
+import com.gustavo.infra.db.DbIntegrityException;
 import com.gustavo.infra.listeners.DataChangeListener;
 import com.gustavo.model.entities.Department;
 import com.gustavo.model.services.DepartmentService;
@@ -23,6 +24,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class DepartmentListController implements Initializable, DataChangeListener {
@@ -40,6 +42,9 @@ public class DepartmentListController implements Initializable, DataChangeListen
 
     @FXML
     private TableColumn<Department, Department> tableColumnEdit;
+
+    @FXML
+    private TableColumn<Department, Department> tableColumnRemove;
 
     @FXML
     private Button btnNew;
@@ -79,6 +84,7 @@ public class DepartmentListController implements Initializable, DataChangeListen
         obsList = FXCollections.observableArrayList(departmentList);
         tableViewDepartment.setItems(obsList);
         initEditButtons();
+        initRemoveButtons();
     }
 
     private void createDialogForm(Department obj, String fileName, Stage parentStage) {
@@ -129,6 +135,42 @@ public class DepartmentListController implements Initializable, DataChangeListen
                         Utils.currentStage(event)));
             }
         });
+    }
 
+    private void initRemoveButtons() {
+        tableColumnRemove.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
+        tableColumnRemove.setCellFactory(param -> new TableCell<Department, Department>() {
+            private final Button button = new Button("Excluir");
+
+            @Override
+            protected void updateItem(Department item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if(item == null) {
+                    setGraphic(null);
+                    return;
+                }
+                setGraphic(button);
+                button.setOnAction(event -> removeEntity(item));
+            }
+
+            private void removeEntity(Department item) {
+                Optional<ButtonType> result =  Alerts.showConfirmation("Confirmação", "Tem certeza da deleção?");
+
+                if(result.get() == ButtonType.OK) {
+                    if(service == null) throw new IllegalStateException("service was null");
+
+                    try {
+                        service.remove(item);
+                        onDataChanged();
+                    } catch (DbIntegrityException e) {
+                        Alerts.showAlert("Erro ao remover",
+                                null,
+                                "Não foi possível remover o departamento",
+                                Alert.AlertType.ERROR);
+                    }
+                }
+            }
+        });
     }
 }
