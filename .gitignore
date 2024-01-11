@@ -2,7 +2,6 @@
 *.class
 
 #IDE
-
 .idea/
 
 # Log file
@@ -35,3 +34,6 @@ build/
 nbbuild/
 dist/
 nbdist/
+
+# eclipse
+.settings/
