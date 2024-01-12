@@ -107,6 +107,7 @@ public class DepartmentListController implements Initializable, DataChangeListen
             dialog.showAndWait();
 
         } catch (IOException e) {
+            e.printStackTrace();
             Alerts.showAlert("Erro", null, "Erro ao carregar o formulário", Alert.AlertType.ERROR);
         }
     }

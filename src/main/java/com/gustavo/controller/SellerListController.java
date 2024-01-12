@@ -4,6 +4,7 @@ import com.gustavo.App;
 import com.gustavo.infra.db.DbIntegrityException;
 import com.gustavo.infra.listeners.DataChangeListener;
 import com.gustavo.model.entities.Seller;
+import com.gustavo.model.services.DepartmentService;
 import com.gustavo.model.services.SellerService;
 import com.gustavo.utils.Alerts;
 import com.gustavo.utils.Utils;
@@ -109,7 +110,8 @@ public class SellerListController implements Initializable, DataChangeListener {
 
             SellerFormController controller = loader.getController();
             controller.setSeller(obj);
-            controller.setSellerService(new SellerService());
+            controller.setServices(new SellerService(), new DepartmentService());
+            controller.loadAssociatedObjects();
             controller.subscribeDataChangeListener(this);
             controller.updateFormData();
 
@@ -122,6 +124,7 @@ public class SellerListController implements Initializable, DataChangeListener {
             dialog.showAndWait();
 
         } catch (IOException e) {
+            e.printStackTrace();
             Alerts.showAlert("Erro", null, "Erro ao carregar o formulário", Alert.AlertType.ERROR);
         }
     }
